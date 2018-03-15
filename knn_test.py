@@ -9,28 +9,31 @@ from knnreg import *
 import numpy as np
 
 
-#size = 1000
 
-#x1 = np.random.randint(1,20,size) + np.randatadom.randn(size)
-#x2 = np.random.randint(1,20,size) + np.random.randn(size)
-#x3 = np.random.randint(1,20,size) + np.random.randn(size)
-#y = 2*x1 + 0.5*x2 + 1.1*x3 + np.random.randn(size) * 1.5
+training_data = np.loadtxt('/home/paul/Distributions/KNNRegression/Data/train_data.csv', delimiter = ',')
+training_data = training_data.astype(int)
 
-#data = np.vstack((x1,x2,x3,y))
-#data = np.round(data,2)
-#data = data.T
-
-#targets = data[:,3]
-#data = np.delete(data,3,1)
+training_response = training_data[:,3]
+training_predictors = np.delete(training_data,3,1)
 
 
+test_data = np.loadtxt('/home/paul/Distributions/KNNRegression/Data/test_data.csv', delimiter = ',')
+test_data = test_data.astype(int)
+
+test_response = test_data[:,3]
+test_predictors = np.delete(test_data,3,1)
 
 
-data = np.loadtxt('/home/paul/Distributions/KNNRegression/Data/sample_data.csv', delimiter = ',')
-data = data.astype(int)
 
-response = data[:,3]
-predictors = np.delete(data,3,1)
+result = knn(training_predictors,test_predictors,training_response, k = 20)
+result = np.array(result)
+
+error = test_response - result
+sse = np.mean([i**2 for i in error])
+print(sse)
 
 
-print(knnreg(predictors,response,10))
+#pcterror = (error / result) * 100
+#print(pcterror)
+
+
