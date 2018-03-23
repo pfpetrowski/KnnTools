@@ -5,7 +5,7 @@
 #You are free to use and distribute under the terms of the MIT License.
 
 import numpy as np
-from scipy import stats
+
 
 def dist(vec1, vec2):
 	assert len(vec1) == len(vec2), "Observations must have the same number of predictors."
@@ -29,29 +29,37 @@ def predict(train, sample, targets, k):
 	prediction = np.mean([targets[i] for i in nearest_neighbors])
 	return prediction
 
+
 def classify(train, sample, targets, k):
 	assert train.shape[0] == len(targets),"Must have equal numbers of samples and targets."
+	from scipy import stats
 	distances = ladist(train, sample)
 	nearest_neighbors = np.argsort(distances)[0:k]
 	classification = stats.mode([targets[i] for i in nearest_neighbors])
 	return classification
 
 
-#def sumsq(data, targets, k):
-#	residuals = []
-#	for i, observation in enumerate(data):
-#		other = np.delete(data,i,0)
-#		other_targets = np.delete(targets, i)
-#		distances = [dist(observation, other[j]) for j in range(other.shape[0])]
-#		nearest_neighbors = np.argsort(distances)[0:k]
-#		yhat = np.mean([other_targets[k] for k in nearest_neighbors])
-#		residuals.append(yhat - targets[i])
-#	rse = [i**2 for i in residuals]
-#	return sum(rse)
+def knn(train, test, targets, k, mode = 'r'):
+	assert (mode == 'r' or mode == 'c'), 'Mode must be "r" for regression or "c" for classification.'
+	if mode == 'r':
+		predictions = [predict(train, test_sample, targets, k) for test_sample in test]
+		return predictions
+	elif mode == 'c':
+		classifications = [classify(train, test_sample, targets, k) for test_sample in test]
+		return classifications
+	else:
+		print('Please use a valid mode')
 
 
+def evaluate(data, targets, k):
+	residuals = []
+	for i, observation in enumerate(data):
+		other = np.delete(data,i,0)
+		other_targets = np.delete(targets, i)
+		distances = ladist(other, observation)
+		nearest_neighbors = np.argsort(distances)[0:k]
+		yhat = np.mean([other_targets[k] for k in nearest_neighbors])
+		residuals.append(yhat - targets[i])
+	rse = [i**2 for i in residuals]
+	return sum(rse)
 
-
-def knn(train, test, targets, k):
-	predictions = [predict(train, test_sample, targets, k) for test_sample in test]
-	return predictions

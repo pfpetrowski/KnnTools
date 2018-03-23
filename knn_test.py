@@ -21,11 +21,16 @@ test_data = np.loadtxt('/home/paul/Distributions/KNNRegression/Data/test_data.cs
 test_data = test_data.astype(int)
 
 test_response = test_data[:,3]
+
 test_predictors = np.delete(test_data,3,1)
 
 
+print(evaluate(training_predictors, training_response, 5))
 
-result = knn(training_predictors,test_predictors,training_response, k = 20)
+quit()
+
+
+result = knn(training_predictors,test_predictors,training_response, k = 20, mode = 'd')
 result = np.array(result)
 
 error = test_response - result
@@ -35,5 +40,3 @@ print(sse)
 
 #pcterror = (error / result) * 100
 #print(pcterror)
-
-
